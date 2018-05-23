@@ -87,30 +87,37 @@ def knife(image_path):
             else:
                 confidence = 0.00
     except:
+        print("Error occurred in knife detection")
         confidence = 0.0   # Some error has occurred
     return confidence
 
 
 def general(image_path):
-    image = cv2.imread(image_path)
-    image_expanded = np.expand_dims(image, axis=0)
-    (boxes, scores, classes, num) = general_session.run(
-        [general_detection_boxes, general_detection_scores,
-            general_detection_classes, general_num_detections],
-        feed_dict={general_image_tensor: image_expanded})
+    try:
+        image = cv2.imread(image_path)
+        image_expanded = np.expand_dims(image, axis=0)
+        (boxes, scores, classes, num) = general_session.run(
+            [general_detection_boxes, general_detection_scores,
+                general_detection_classes, general_num_detections],
+            feed_dict={general_image_tensor: image_expanded})
 
-    classes = np.squeeze(classes).astype(np.int32)
-    scores = np.squeeze(scores)
-    boxes = np.squeeze(boxes)
+        classes = np.squeeze(classes).astype(np.int32)
+        scores = np.squeeze(scores)
+        boxes = np.squeeze(boxes)
 
-    object_name = []
-    object_score = []
+        object_name = []
+        object_score = []
 
-    for c in range(0, len(classes)):
-        class_name = general_category_index[classes[c]]['name']
-        if scores[c] > .30:   # If confidence level is good enough
-            object_name.append(class_name)
-            object_score.append(str(scores[c] * 100)[:5])
+        for c in range(0, len(classes)):
+            class_name = general_category_index[classes[c]]['name']
+            if scores[c] > .30:   # If confidence level is good enough
+                object_name.append(class_name)
+                object_score.append(str(scores[c] * 100)[:5])
+    except:
+        print("Error occurred in general detection")
+        object_name = ['']
+        object_score = ['']
+        
     return object_name, object_score
 
 

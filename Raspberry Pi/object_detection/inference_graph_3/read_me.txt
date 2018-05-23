@@ -1,0 +1,1 @@
+this folder contains my trained knife model which have 1 folder and 6 files

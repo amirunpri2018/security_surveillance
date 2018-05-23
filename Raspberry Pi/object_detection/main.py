@@ -2,14 +2,11 @@ import detect_object
 import cv2        # To capture the images/video from the security camera
 import requests   # To send the snapshot and detected objects to the server
 import time
-import threading  # To do multiple task
 import os
 import sys
-
-
 import face_recognition
 
-print('Module imports Successful!')
+print('Module Imports Successful!')
 url = 'http://192.168.0.101:8000/predict/'
 # server url to post the snapshot and detected object
 cap = cv2.VideoCapture(0)
