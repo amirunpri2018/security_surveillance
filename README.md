@@ -1,6 +1,19 @@
 # Security and Serveillance System
 Security and Serveillance system using Tensorflow Object Detection API and Opencv
 
+ <p align="center">
+  <img src="home_page.jpg" width=600 height=400>
+ </p> 
+ 
+ <p align="center">
+  <img src="know_about_people.jpg" width=700 height=450>
+ </p> 
+ 
+ <p align="center">
+  <img src="search_people.jpg" width=700 height=450>
+ </p> 
+
+
 ## Installations and Setup:
 ```bash
 # Download Tensorflow 1.4.0 on RPi for Python3
