@@ -6,11 +6,13 @@ Security and Serveillance system using Tensorflow Object Detection API and Openc
  </p> 
  <br>
  
+ To know more about people click on this link which will give a big list of detected faces of people:
  <p align="center">
   <img src="more_about_people.jpg" width=800 height=250>
  </p> 
  <br>
  
+ You can search for required person:
  <p align="center">
   <img src="search_people.jpg" width=800 height=230>
  </p> 
