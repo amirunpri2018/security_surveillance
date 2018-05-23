@@ -2,17 +2,19 @@
 Security and Serveillance system using Tensorflow Object Detection API and Opencv
 
  <p align="center">
-  <img src="home_page.jpg" width=600 height=400>
+  <img src="home_page.jpg" width=700 height=450>
  </p> 
+ <br>
  
  <p align="center">
-  <img src="know_about_people.jpg" width=700 height=450>
+  <img src="more_about_people.jpg" width=700 height=450>
  </p> 
+ <br>
  
  <p align="center">
   <img src="search_people.jpg" width=700 height=450>
  </p> 
-
+ <br>
 
 ## Installations and Setup:
 ```bash
