@@ -1,0 +1,13 @@
+sudo apt-get install protobuf-compiler python-pil python-lxmlsudo 
+
+sudo pip3 install pillow
+
+sudo pip3 install lxml
+
+sudo pip3 install matplotlib
+
+protoc object_detection/protos/*.proto --python_out=.
+
+export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
+
+python3 object_detection/builders/model_builder_test.py
