@@ -15,7 +15,6 @@ Security and Serveillance system using Tensorflow Object Detection API and Openc
   <img src="search_people.jpg" width=800 height=230>
  </p> 
  <hr>
- <br>
 
 ## Installations and Setup:
 ```bash
