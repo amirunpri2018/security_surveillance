@@ -38,3 +38,15 @@ https://www.youtube.com/watch?v=ZuhPzP5lt9U&t=1099s
 
 Blog:
 http://www.life2coding.com/install-opencv-3-4-0-python-3-raspberry-pi-3/
+
+```bash
+# Install Python2 64-bit on EC2 Windows
+pip install django
+pip install django-rest_framework
+pip install requests
+pip install bs4
+pip install Pillow
+pip install django-cors-headers
+```
+
+
