@@ -28,5 +28,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^lmtech/$', view.page_load, name='page_load'),
     url(r'^predict/$', view.PredictImageObject.as_view()),
-    
+    url(r'^info/$', view.info_page, name='info_page'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -137,6 +137,16 @@
                           <input type="checkbox" id="alert_switch5">
                           <span class="slider round"></span>
                       </label>
+
+                      <p>Car</p>
+                      <label class="switch">
+                          <input type="checkbox" id="alert_switch6">
+                          <span class="slider round"></span>
+                      </label>
+                      <br>
+                      {# when this button is clicked, current status of alerts will be saved in database #}
+                      <button type="button" class="btn btn-primary" onclick="save_alerts()">Submit</button>
+                      
                      <hr>
                     <p>
                         <h4><b>Visual Intelligence System:</b></h4>
@@ -170,22 +180,29 @@
                                   <tr id="snapshot_url" onclick="ShowSnapshot()"><td id="concept4"></td><td id="probability4"></td></tr>
                                   <tr id="snapshot_url" onclick="ShowSnapshot()"><td id="concept5"></td><td id="probability5"></td></tr>
                                   <tr id="snapshot_url" onclick="ShowSnapshot()"><td id="concept6"></td><td id="probability6"></td></tr>
+                                  <tr id="snapshot_url" onclick="ShowSnapshot()"><td id="concept7"></td><td id="probability7"></td></tr>
                               </table>
                               
                               <br> <a onclick="window.open('http://127.0.0.1:8000/admin/security_serveillance/snapshots/', '_blank')">Know more about people.</a>
-                              <script>
-                              var isChecked = new Array()
-                              var snapshot_url = '';  
 
-                              function getAlertValue()
+                              <script>
+                              var snapshot_url = '';  
+                              var isChecked = new Array()
+
+                              function save_alerts()
                               {
-                                for(switch_number=0; switch_number<6; switch_number++)
+                                // get the status of alerts
+                                for(switch_number=0; switch_number<7; switch_number++)
                                 {
                                   isChecked[switch_number] = document.getElementById("alert_switch"+switch_number).checked;
                                 }
                                 alert_status = isChecked.toString()
-                                return alert_status;
-                               }
+
+                                // post the status of alert to server
+                                $.post("http://127.0.0.1:8000/lmtech/", {"alerts": alert_status},function(response){
+                                  alert(response)
+                                });
+                              }
 
                               function ShowSnapshot() 
                               { 
@@ -196,8 +213,8 @@
                               // and receives the detected objects as well. So here data=analysis
                               function video_frame_check()
                               { 
-                                $.get("http://127.0.0.1:8000/predict/", {'alert': getAlertValue}, function(data){
-                                  snapshot_url = 'http://127.0.0.1:8000/media/' + data[0].file_path                                      
+                                $.get("http://127.0.0.1:8000/predict/", function(data){
+                                  snapshot_url = data[0].file_path                                      
                                   document.getElementById("concept1").innerHTML = data[0].label
                                   document.getElementById("probability1").innerHTML = data[0].confidence
                                   document.getElementById("concept2").innerHTML = data[1].label
@@ -210,6 +227,8 @@
                                   document.getElementById("probability5").innerHTML = data[4].confidence
                                   document.getElementById("concept6").innerHTML = data[5].label
                                   document.getElementById("probability6").innerHTML = data[5].confidence
+                                  document.getElementById("concept7").innerHTML = data[6].label
+                                  document.getElementById("probability7").innerHTML = data[6].confidence
                                 });
                               }
 
@@ -220,7 +239,8 @@
                               document.getElementById("alert_switch2").checked = (String(true) == alerts.Handbag);
                               document.getElementById("alert_switch3").checked = (String(true) == alerts.Bottle);
                               document.getElementById("alert_switch4").checked = (String(true) == alerts.Dog);
-                              document.getElementById("alert_switch5").checked = (String(true) == alerts.Cat);                            
+                              document.getElementById("alert_switch5").checked = (String(true) == alerts.Cat);   
+                              document.getElementById("alert_switch6").checked = (String(true) == alerts.Car);            
 
                               setInterval("video_frame_check()", 5000)
                               </script>

@@ -8,6 +8,15 @@ face_detect = cv2.CascadeClassifier(
 
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read('face_recognition_model/rpi_training_data.yml')
+# above is for rpi cv2 version 3.4
+
+# following is for cv2 version 2.4
+# recognizer = cv2.createLBPHFaceRecognizer()
+# recognizer.load('recognizer/training_data.yml')
+
+
+
+recognizer.read('face_recognition_model/rpi_training_data.yml')
 
 def detect_face(image_path):
     frame = cv2.imread(image_path)

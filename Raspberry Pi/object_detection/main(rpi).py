@@ -2,13 +2,18 @@ import detect_object
 import cv2        # To capture the images/video from the security camera
 import requests   # To send the snapshot and detected objects to the server
 import time
+import threading  # To do multiple task
 import os
 import sys
 import face_recognition
 
-print('Module Imports Successful!')
-url = 'http://192.168.0.101:8000/predict/'
+print('Module imports Successful!')
+
+url = 'http://127.0.0.1:8000/predict/'
 # server url to post the snapshot and detected object
+
+once_upload = False
+
 cap = cv2.VideoCapture(0)
 print('Starting the camera!')
 
@@ -54,5 +59,21 @@ while True:
 
     object_name.append('detected_faces')
     object_score.append(face_string)
-    server_upload(object_name, object_score)
+    if ('person' in object_name) or ('No face detected!' not in object_score) or ('knife' in object_name): 
+        server_upload(object_name, object_score)
+        once_upload = True
+    else:
+        if once_upload:
+            object_name = ['detected_faces']
+            object_score = ['abort']
+            # send empty data to clear the dashboard
+            server_upload(object_name, object_score)
+            print('Data uploaded for clearing the frontend screen.')
+            once_upload = False
+            
+        print('Aborted the server upload!')
+            
+        
     print(object_name, object_score)
+
+#camera_thread.join()

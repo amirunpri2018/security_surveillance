@@ -2,10 +2,11 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from .models import Snapshots, AlertChoice
+from .models import Snapshots, AlertChoice, AlertRecord
 
 
 # Register your models here.
+admin.site.register(AlertRecord)
 
 
 class SnapshotsAdmin(admin.ModelAdmin):
@@ -17,5 +18,6 @@ class SnapshotsAdmin(admin.ModelAdmin):
 
     ordering = ('id',)
 
-admin.site.register(Snapshots, SnapshotsAdmin)  # This will register my models to admin
+# This will register my models to admin
+admin.site.register(Snapshots, SnapshotsAdmin)
 # Note: To enable list_display I have to register admin-name too
