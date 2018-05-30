@@ -34,8 +34,7 @@ sudo apt-get install python3-cairo
 # Auto start python script when RPi boots:
 sudo apt-get install daemontools daemontools-run
 crontab -e
-@reboot sudo python /home/pi/Desktop/pyprog/pytest.py
- /home/pi/Desktop/pyprog/log.txt
+@reboot sudo python /home/pi/Desktop/test.py /home/pi/Desktop/log.txt
 ```
 Install Opencv3 on RPi for Python3
 
