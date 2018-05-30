@@ -30,6 +30,12 @@ python3
 # Install matplotlib on RPi for Python3
 sudo pip3 install matplotlib
 sudo apt-get install python3-cairo
+
+# Auto start python script when RPi boots:
+sudo apt-get install daemontools daemontools-run
+crontab -e
+@reboot sudo python /home/pi/Desktop/pyprog/pytest.py
+ /home/pi/Desktop/pyprog/log.txt
 ```
 Install Opencv3 on RPi for Python3
 
