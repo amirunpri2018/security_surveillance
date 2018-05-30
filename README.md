@@ -35,6 +35,21 @@ sudo apt-get install python3-cairo
 sudo apt-get install daemontools daemontools-run
 crontab -e
 @reboot sudo python /home/pi/Desktop/test.py /home/pi/Desktop/log.txt
+
+# Another method for auto execution of python script in rpi:
+1. Make a directory in /home/.config/ named as autostart
+2. Create a file xyz.desktop and paste the following content:
+
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=ss_app
+Comment=
+Exec=python3 /path/to/python/script.py
+StartupNotify=false
+Terminal=true
+Hidden=false
+
 ```
 Install Opencv3 on RPi for Python3
 
