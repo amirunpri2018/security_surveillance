@@ -5,9 +5,9 @@ Security and Serveillance system using Tensorflow Object Detection API and Openc
   <img src="home_page_new.jpg" width=800 height=450>
  </p> 
  
- When we click on "know more about people" link it will give a big list of detected faces of people:
+ When we click on "know more about people" link you will get a list of snapshots and video clips of detected events:
  <p align="center">
-  <img src="more_about_people.jpg" width=800 height=250>
+  <img src="more_about_people_new.jpg" width=800 height=250>
  </p> 
  
  You can search for required person:
