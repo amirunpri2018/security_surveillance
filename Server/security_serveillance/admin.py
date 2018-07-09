@@ -11,12 +11,10 @@ admin.site.register(AlertRecord)
 
 class SnapshotsAdmin(admin.ModelAdmin):
     # define which columns should be displayed
-    list_display = ('id', 'created_at', 'picture', 'detected_faces')
+    list_display = ('id', 'created_at', 'picture', 'video')
 
-    # add search field
-    search_fields = ['detected_faces', ]
+    ordering = ('-id',)
 
-    ordering = ('id',)
 
 # This will register my models to admin
 admin.site.register(Snapshots, SnapshotsAdmin)

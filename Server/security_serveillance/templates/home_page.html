@@ -172,6 +172,10 @@
                             <div class="panel-body">
                               <input type="hidden" id="alerts" name="variable" value="{{ alert_states }}">
                               {# catch the values of alerts from server to display activated alerts #}
+
+                              <input type="hidden" id="video" name="variable" value="{{ video_url }}">
+                              {# video url for straming the video live #}
+
                               <table>
                                   <tr><th>PREDICTED CONCEPT</th><th>CONFIDENCE(%)</th></tr>
                                   <tr id="snapshot_url" onclick="ShowSnapshot()"><td id="concept1"></td><td id="probability1"></td></tr>
@@ -184,10 +188,15 @@
                               </table>
                               
                               <br> <a onclick="window.open('http://127.0.0.1:8000/admin/security_serveillance/snapshots/', '_blank')">Know more about people.</a>
-
+                              <br><br>
+                              <button type="button" class="btn btn-primary" onclick="live_video()">Watch Live</button>
+                              <br><br>
+                              <div id="iframeDisplay"></div> 
                               <script>
+
                               var snapshot_url = '';  
                               var isChecked = new Array()
+                              var video_url = '';
 
                               function save_alerts()
                               {
@@ -204,6 +213,11 @@
                                 });
                               }
 
+                              function live_video()
+                              { 
+                                document.getElementById("iframeDisplay").innerHTML = '<iframe width="515" height="335"  scrolling="no" src='+video_url+'></iframe>'
+                              }
+
                               function ShowSnapshot() 
                               { 
                                 window.open(snapshot_url, '_blank');
@@ -213,8 +227,9 @@
                               // and receives the detected objects as well. So here data=analysis
                               function video_frame_check()
                               { 
-                                $.get("http://127.0.0.1:8000/predict/", function(data){
-                                  snapshot_url = data[0].file_path                                      
+                                $.get("http://127.0.0.1:8000/predict/", function(data){                                  
+                                  snapshot_url = data[0].file_path    
+                                  video_url = data[0].video_url                 
                                   document.getElementById("concept1").innerHTML = data[0].label
                                   document.getElementById("probability1").innerHTML = data[0].confidence
                                   document.getElementById("concept2").innerHTML = data[1].label
@@ -234,6 +249,7 @@
 
                               <!--setting the alert switch position according to the database values while loading the homepage-->
                               var alerts = JSON.parse(document.getElementById("alerts").value)
+                              var video_url = JSON.parse(document.getElementById("video").value)
                               document.getElementById("alert_switch0").checked = (String(true) == alerts.Person);
                               document.getElementById("alert_switch1").checked = (String(true) == alerts.Knife);
                               document.getElementById("alert_switch2").checked = (String(true) == alerts.Handbag);
@@ -241,8 +257,7 @@
                               document.getElementById("alert_switch4").checked = (String(true) == alerts.Dog);
                               document.getElementById("alert_switch5").checked = (String(true) == alerts.Cat);   
                               document.getElementById("alert_switch6").checked = (String(true) == alerts.Car);            
-
-                              setInterval("video_frame_check()", 5000)
+                              setInterval("video_frame_check()", 10000)
                               </script>
                             </div>
                           </div>

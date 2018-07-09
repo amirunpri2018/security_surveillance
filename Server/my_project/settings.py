@@ -37,11 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'security_serveillance',
-    'rest_framework',
+    'security_serveillance',   # Registering my application
+    'rest_framework',   # Register that we are using rest-framework
 ]
 
-REST_FRAMEWORK = {                   # Required for Authentication while data exchange between django and angular 2
+# This need to add for authentication between frontend and backend requests
+REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
@@ -55,7 +56,6 @@ MIDDLEWARE_CLASSES = [
     'corsheaders.middleware.CorsMiddleware',            # To avoid CORS errors
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -140,3 +140,5 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'security_serveillance/media')
+
+LOGIN_REDIRECT_URL = 'admin'

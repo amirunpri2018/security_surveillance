@@ -20,6 +20,9 @@ from django.conf import settings  # This import is for specifying the media url
 from django.conf.urls.static import static   # This import is for static url
 from security_serveillance import views as view
 
+from django.contrib.auth import views as auth_views
+from django.views.generic.base import TemplateView
+
 admin.site.site_header = 'LMTech Insight'
 admin.site.index_title = 'LMTech Insight'
 admin.site.site_title = 'LMTech Insight'

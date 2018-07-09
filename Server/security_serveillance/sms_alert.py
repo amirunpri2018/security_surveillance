@@ -25,6 +25,7 @@ class sms:
 		self.q=self.s.post(self.url,data=self.cred)
 
 		self.loggedIn=False				# a variable of knowing whether logged in or not
+		 
 
 		if "http://site21.way2sms.com/main.action" in self.q.url:			# http status 200 == OK
 

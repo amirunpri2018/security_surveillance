@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import HttpResponse
 
 from .models import Snapshots, AlertChoice, AlertRecord
-import json
 import sms_alert  # Import this module to send text messages
 from django.views.decorators.csrf import csrf_exempt
 
-
+from django.core.files import File  # This is to save the raw file in db
+import os  # This is to execute the command in cmd
+import json
 mobile_number = '8983050329'
 # Mobile number to which the alert message will be sent
 media_path = 'http://127.0.0.1:8000/media/'
@@ -20,8 +21,13 @@ media_path = 'http://127.0.0.1:8000/media/'
 @csrf_exempt   # post required response was creating an assertion error
 def page_load(request):  # http://127.0.0.1:8000/lmtech/
     if request.method == 'GET':
+
         global analysis  # Declare a global list var to use it in get function
-        analysis = []    # Declare an empty list to send response
+        video_url = str(Snapshots.objects.latest('id').video_url)
+
+        # Declare an empty list to send response
+        analysis = [{'video_url': video_url, 'label': '',
+                     'confidence': '', }]
         # Here, analysis list is declared because if RPi is not posting any
         # data then there will not be any variable 'analysis in get request
 
@@ -46,6 +52,7 @@ def page_load(request):  # http://127.0.0.1:8000/lmtech/
                                                            status_list)))
         context = {
             "alert_states": json.dumps(alert_states),
+            "video_url": json.dumps(video_url)
         }
         return render(request, "home_page.html", context)
 
@@ -169,40 +176,72 @@ class PredictImageObject(APIView):    # http://127.0.0.1:8000/predict/
 
         global analysis  # Declare a global list var to use it in get function
         analysis = []    # Declare an empty list to send response
+        # to display the message/status
+        print 'Posted data:', request.data
 
-        if request.data['detected_faces'] == 'abort':  # clear the o/p screen
+        if request.data['message'] == ['abort']:  # clear the o/p screen
             print('Termination of post request from RPi!')
+            video_url = request.data['video_url']
             while len(analysis) < 8:
                 analysis.append({
                     'label': '',
                     'confidence': '',
-                    'file_path': 'http://127.0.0.1:8000/info'
+                    'file_path': 'http://127.0.0.1:8000/info',
+                    'video_url': str(video_url)
                 })
             sms_sent = 'no_person,no_knife,no_handbag,no_bottle,no_dog,no_cat,no_car'
             alert_record = AlertRecord(sms_record=sms_sent)
             alert_record.save()
             return HttpResponse("Abort Response")
 
-        media_file = Snapshots(picture=request.FILES[
-            'media'], detected_faces=request.data['detected_faces'])
-        media_file.save()  # Save the snapshot in database
-        # Get the saved latest snapshot image name and path
-        file_path = media_path + str(Snapshots.objects.latest('id').picture)
+        try:
+            if request.data['message'] == 'snapshot':
+                media_file = Snapshots(picture=request.FILES['snapshot'], video='',
+                                       video_url=request.data['video_url'])
+                media_file.save()  # Save the snapshot in database
+
+            if request.data['message'] == 'video':
+                # save the file locally to convert it into mp4 later
+                destination = open('video_clip.avi', 'wb+')
+                for chunk in request.FILES['video'].chunks():
+                    destination.write(chunk)
+                destination.close()
+
+                print('Converting...')
+                os.system("ffmpeg -i video_clip.avi video_clip.mp4 -y")
+                # This will convert the avi to mp4 (for this to work we need to
+                # have ffmpeg path set in Env Var)
+
+                video_file = open('video_clip.mp4', 'rb')
+                media_file = Snapshots(picture='', video=File(video_file),
+                                       video_url=request.data['video_url'])
+                # File class helps to store file in django db
+                media_file.save()  # Save the video in database
+                video_file.close()
+        except:
+            print 'error'
+            pass
 
         try:
+            # Get the saved latest snapshot image name and path to show when
+            # clicked on detected object
+            file_path = media_path + \
+                str(Snapshots.objects.latest('id').picture)
+            video_url = request.data['video_url']  # provides live streaming
+
             for key, value in request.data.items():
-                if key == 'media' or key == 'tv' or key == 'detected_faces':
-                    continue
-                    # do not add snapshot in objects list just go ahead
+                print key, value, str(value)[:5], str(file_path), str(video_url)
+                if key == 'snapshot' or key == 'tv' or key == 'video' or key == 'video_url' or key == 'message':
+                    continue  # Do not consider these key as detected objects
                 else:
-                    # add detected objects and their probabilities in list
                     predicted_objects.append(key)
                     confidence.append(value)
                     # Dict(json object) to give at frontend in get method
                     analysis.append({
                         'label': key,
                         'confidence': str(value)[:5],
-                        'file_path': str(file_path)
+                        'file_path': str(file_path),
+                        'video_url': str(video_url)
                     })
 
             # Logic to remove previous data from the table
@@ -210,14 +249,18 @@ class PredictImageObject(APIView):    # http://127.0.0.1:8000/predict/
                 analysis.append({
                     'label': '',
                     'confidence': '',
-                    'file_path': str(file_path)
+                    'file_path': str(file_path),
+                    'video_url': str(video_url)
                 })
-            # print "Detected objects:", analysis
+
             self.check_alerts(predicted_objects, confidence)
+            # Check whether SMS alerts are active for detected object so that
+            # we can se the text message
         except:
             print 'Failed to get the detected objects!'
-        return HttpResponse("Success!")
+        return HttpResponse("Alright!")
 
+    @csrf_exempt
     def get(self, request):
         return Response(analysis)
 
