@@ -2,7 +2,7 @@
 Security and Serveillance system using Tensorflow Object Detection API and Opencv
 
  <p align="center">
-  <img src="home_page.jpg" width=800 height=450>
+  <img src="home_page_new.jpg" width=800 height=450>
  </p> 
  
  When we click on "know more about people" link it will give a big list of detected faces of people:
