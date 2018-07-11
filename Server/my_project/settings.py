@@ -135,10 +135,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "security_serveillance/static"),
 ]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'security_serveillance/media')
 
-LOGIN_REDIRECT_URL = 'admin'
+LOGIN_REDIRECT_URL = '/'

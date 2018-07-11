@@ -1,25 +1,29 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files import File  # This is to save the raw file in db
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.http import HttpResponse
 
 from .models import Snapshots, AlertChoice, AlertRecord
-import sms_alert  # Import this module to send text messages
-from django.views.decorators.csrf import csrf_exempt
-
-from django.core.files import File  # This is to save the raw file in db
 import os  # This is to execute the command in cmd
 import json
+import sms_alert  # Import this module to send text messages
+
 mobile_number = '8983050329'
 # Mobile number to which the alert message will be sent
 media_path = 'http://127.0.0.1:8000/media/'
 
 
+@login_required
 @csrf_exempt   # post required response was creating an assertion error
-def page_load(request):  # http://127.0.0.1:8000/lmtech/
+def page_load(request):  # http://127.0.0.1:8000/
     if request.method == 'GET':
 
         global analysis  # Declare a global list var to use it in get function
@@ -54,7 +58,7 @@ def page_load(request):  # http://127.0.0.1:8000/lmtech/
             "alert_states": json.dumps(alert_states),
             "video_url": json.dumps(video_url)
         }
-        return render(request, "home_page.html", context)
+        return render(request, "security_serveillance/home_page.html", context)
 
     if request.method == 'POST':
         alert_status_string = request.POST.get('alerts')

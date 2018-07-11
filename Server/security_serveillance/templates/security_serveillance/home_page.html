@@ -189,9 +189,12 @@
                               
                               <br> <a onclick="window.open('http://127.0.0.1:8000/admin/security_serveillance/snapshots/', '_blank')">Know more about people.</a>
                               <br><br>
-                              <button type="button" class="btn btn-primary" onclick="live_video()">Watch Live</button>
+                              <button type="button" class="btn btn-primary"  onclick="live_video()"><span class="glyphicon glyphicon-eye-open"></span>  Watch Live</button>
+                              <a href="http://127.0.0.1:8000/accounts/logout/" class="btn btn-info btn-justified pull-right"><span class="glyphicon glyphicon-log-out"></span>  Log out</a>
                               <br><br>
                               <div id="iframeDisplay"></div> 
+                              
+                            
                               <script>
 
                               var snapshot_url = '';  
@@ -208,7 +211,7 @@
                                 alert_status = isChecked.toString()
 
                                 // post the status of alert to server
-                                $.post("http://127.0.0.1:8000/lmtech/", {"alerts": alert_status},function(response){
+                                $.post("http://127.0.0.1:8000/", {"alerts": alert_status},function(response){
                                   alert(response)
                                 });
                               }
@@ -257,7 +260,7 @@
                               document.getElementById("alert_switch4").checked = (String(true) == alerts.Dog);
                               document.getElementById("alert_switch5").checked = (String(true) == alerts.Cat);   
                               document.getElementById("alert_switch6").checked = (String(true) == alerts.Car);            
-                              setInterval("video_frame_check()", 10000)
+                              setInterval("video_frame_check()", 2000)
                               </script>
                             </div>
                           </div>
@@ -266,7 +269,6 @@
         </div>
     </div>
 </div>
-
 </body>
 
 </html>

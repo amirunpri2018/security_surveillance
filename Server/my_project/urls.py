@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 
 from django.conf import settings  # This import is for specifying the media url
@@ -29,7 +29,9 @@ admin.site.site_title = 'LMTech Insight'
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^lmtech/$', view.page_load, name='page_load'),
+    url(r'^$', view.page_load, name='page_load'),
     url(r'^predict/$', view.PredictImageObject.as_view()),
     url(r'^info/$', view.info_page, name='info_page'),
+    url(r'^accounts/', include('django.contrib.auth.urls'))
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
