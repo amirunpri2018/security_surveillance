@@ -15,10 +15,19 @@ from .models import Snapshots, AlertChoice, AlertRecord
 import os  # This is to execute the command in cmd
 import json
 import sms_alert  # Import this module to send text messages
+from pushetta import Pushetta
+from time import gmtime, strftime
+from datetime import datetime
+
+API_KEY = "367b8608009bf4e0fa9e68794305c6c6d84a07a2"
+CHANNEL_NAME = "LMTech"
+p = Pushetta(API_KEY)
+
+ 
 
 mobile_number = '8983050329'
 # Mobile number to which the alert message will be sent
-media_path = 'http://127.0.0.1:8000/media/'
+media_path = 'http://13.126.171.131:8000/media/'
 
 
 @login_required
@@ -86,18 +95,17 @@ def page_load(request):  # http://127.0.0.1:8000/
 
 class PredictImageObject(APIView):    # http://127.0.0.1:8000/predict/
 
-    def alert(self, detected_object):
+    def alert(self, detected_object, file_path):
         try:
-            message = sms_alert.sms()   # logging in
-            message.send(mobile_number,
-                         detected_object + ' has been detected!')
-            sent_count = message.msgSentToday()
-            print 'Message Sent Count =', sent_count
-            message.logout()
+            ct = str(datetime.now())
+            current_time = ct[11:19]
+            msg = 'Time: ' + current_time + '\n' + detected_object + ' has been detected!\n'
+            msg += 'You can visit the following link to see the snapshot.\n' + file_path
+            p.pushMessage(CHANNEL_NAME, msg)
         except:
             print 'Message sending Failed!'
 
-    def check_alerts(self, predicted_objects, confidence):
+    def check_alerts(self, predicted_objects, confidence, file_path):
         print('Checking for alerts...')
         # Get the latest status of activated alerts from the database
         latest_alert_status = AlertChoice.objects.latest('id').alert_status
@@ -118,7 +126,7 @@ class PredictImageObject(APIView):    # http://127.0.0.1:8000/predict/
         # Call alert method to send text message
         sms_sent = ''  # remembers that which sms has been sent
         if (('person' in predicted_objects) and status_list[0] == 'true' and ('person' not in sms_list)) and ('no_person' in sms_list):
-            self.alert('Person')
+            self.alert('Person', file_path)
             sms_sent += 'person,'
 
         elif ('person' not in predicted_objects) and status_list[0] == 'true':
@@ -190,7 +198,7 @@ class PredictImageObject(APIView):    # http://127.0.0.1:8000/predict/
                 analysis.append({
                     'label': '',
                     'confidence': '',
-                    'file_path': 'http://127.0.0.1:8000/info',
+                    'file_path': 'http://13.126.171.131:8000/info',
                     'video_url': str(video_url)
                 })
             sms_sent = 'no_person,no_knife,no_handbag,no_bottle,no_dog,no_cat,no_car'
@@ -222,6 +230,13 @@ class PredictImageObject(APIView):    # http://127.0.0.1:8000/predict/
                 # File class helps to store file in django db
                 media_file.save()  # Save the video in database
                 video_file.close()
+                video_path = media_path + str(Snapshots.objects.latest('id').video)
+
+                ct = str(datetime.now())
+                current_time = ct[11:19]
+                msg = 'Time:' + current_time + '\n' + 'Video clip of the detected event:\n' + video_path
+                p.pushMessage(CHANNEL_NAME, msg)
+                print 'msg sent'
         except:
             print 'error'
             pass
@@ -257,7 +272,7 @@ class PredictImageObject(APIView):    # http://127.0.0.1:8000/predict/
                     'video_url': str(video_url)
                 })
 
-            self.check_alerts(predicted_objects, confidence)
+            self.check_alerts(predicted_objects, confidence, file_path)
             # Check whether SMS alerts are active for detected object so that
             # we can se the text message
         except:
