@@ -11,7 +11,7 @@ admin.site.register(AlertRecord)
 
 class SnapshotsAdmin(admin.ModelAdmin):
     # define which columns should be displayed
-    list_display = ('id', 'created_at', 'picture', 'video')
+    list_display = ('id', 'created_at', 'picture')
 
     ordering = ('-id',)
 

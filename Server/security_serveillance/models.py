@@ -13,11 +13,6 @@ class Snapshots(models.Model):
 
     # This field will store the snapshot of detected object
     picture = models.ImageField(upload_to='pictures')
-
-    # This field will store the video clip of about 15 sec from the snapshot
-    # captured
-    video = models.ImageField(upload_to='videos')
-
     # The video url is localtunnel url to access the localhost and view the
     # camera live
     video_url = models.CharField(max_length=255, null=True)

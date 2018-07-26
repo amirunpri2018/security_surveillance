@@ -23,7 +23,6 @@ API_KEY = "367b8608009bf4e0fa9e68794305c6c6d84a07a2"
 CHANNEL_NAME = "LMTech"
 p = Pushetta(API_KEY)
 
- 
 
 mobile_number = '8983050329'
 # Mobile number to which the alert message will be sent
@@ -95,7 +94,7 @@ def page_load(request):  # http://127.0.0.1:8000/
 
 class PredictImageObject(APIView):    # http://127.0.0.1:8000/predict/
 
-    def alert(self, detected_object, file_path):
+    def alert(self, detected_object, file_path):  # give alerts on pushetta andorid app
         try:
             ct = str(datetime.now())
             current_time = ct[11:19]
@@ -208,38 +207,11 @@ class PredictImageObject(APIView):    # http://127.0.0.1:8000/predict/
 
         try:
             if request.data['message'] == 'snapshot':
-                media_file = Snapshots(picture=request.FILES['snapshot'], video='',
-                                       video_url=request.data['video_url'])
+                media_file = Snapshots(picture=request.FILES[
+                                       'snapshot'], video_url=request.data['video_url'])
                 media_file.save()  # Save the snapshot in database
-
-            if request.data['message'] == 'video':
-                # save the file locally to convert it into mp4 later
-                destination = open('video_clip.avi', 'wb+')
-                for chunk in request.FILES['video'].chunks():
-                    destination.write(chunk)
-                destination.close()
-
-                print('Converting...')
-                os.system("ffmpeg -i video_clip.avi video_clip.mp4 -y")
-                # This will convert the avi to mp4 (for this to work we need to
-                # have ffmpeg path set in Env Var)
-
-                video_file = open('video_clip.mp4', 'rb')
-                media_file = Snapshots(picture='', video=File(video_file),
-                                       video_url=request.data['video_url'])
-                # File class helps to store file in django db
-                media_file.save()  # Save the video in database
-                video_file.close()
-                video_path = media_path + str(Snapshots.objects.latest('id').video)
-
-                ct = str(datetime.now())
-                current_time = ct[11:19]
-                msg = 'Time:' + current_time + '\n' + 'Video clip of the detected event:\n' + video_path
-                p.pushMessage(CHANNEL_NAME, msg)
-                print 'msg sent'
         except:
-            print 'error'
-            pass
+            print 'Error occurred while saving the snapshot'
 
         try:
             # Get the saved latest snapshot image name and path to show when
@@ -250,7 +222,7 @@ class PredictImageObject(APIView):    # http://127.0.0.1:8000/predict/
 
             for key, value in request.data.items():
                 print key, value, str(value)[:5], str(file_path), str(video_url)
-                if key == 'snapshot' or key == 'tv' or key == 'video' or key == 'video_url' or key == 'message':
+                if key == 'snapshot' or key == 'tv' or key == 'video_url' or key == 'message':
                     continue  # Do not consider these key as detected objects
                 else:
                     predicted_objects.append(key)
